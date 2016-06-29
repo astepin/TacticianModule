@@ -44,7 +44,7 @@ class CommandBusFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->serviceLocator->setService('middleware-service', $middlewareStub);
 
-        $commandBus = $this->factory->createService($this->serviceLocator);
+        $commandBus = ($this->factory)($this->serviceLocator,'');
         $commandBus->handle($command);
     }
 
@@ -68,7 +68,7 @@ class CommandBusFactoryTest extends \PHPUnit_Framework_TestCase
         $this->serviceLocator->setService('middleware-middle', $middlewareStubMiddle);
         $this->serviceLocator->setService('middleware-last', $middlewareStubLast);
 
-        $commandBus = $this->factory->createService($this->serviceLocator);
+        $commandBus = ($this->factory)($this->serviceLocator,'');
         $output = $commandBus->handle(new \stdClass());
 
         $this->assertEquals('123', $output);

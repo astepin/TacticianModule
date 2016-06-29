@@ -1,29 +1,31 @@
 <?php
 namespace TacticianModule\Factory\Controller\Plugin;
 
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
 use League\Tactician\CommandBus;
 use TacticianModule\Controller\Plugin\TacticianCommandBusPlugin;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\AbstractPluginManager;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 class TacticianCommandBusPluginFactory implements FactoryInterface
 {
     /**
-     * Create service
+     * Create an object
      *
-     * @param ServiceLocatorInterface $pm
-     * @return TacticianCommandBusPlugin
+     * @param  ContainerInterface $container
+     * @param  string $requestedName
+     * @param  null|array $options
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public function createService(ServiceLocatorInterface $pm)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = NULL)
     {
-        if ($pm instanceof AbstractPluginManager) {
-            /** @var CommandBus $commandBus */
-            $commandBus = $pm->getServiceLocator()->get(CommandBus::class);
-        } else {
-            /** @var CommandBus $commandBus */
-            $commandBus = $pm->get(CommandBus::class);
-        }
+        $commandBus = $container->get(CommandBus::class);
 
         return new TacticianCommandBusPlugin($commandBus);
     }

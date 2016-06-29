@@ -1,6 +1,7 @@
 <?php
 namespace TacticianModuleTest\Factory\Controller\Plugin;
 
+use Interop\Container\ContainerInterface;
 use League\Tactician\CommandBus;
 use TacticianModule\Controller\Plugin\TacticianCommandBusPlugin;
 use TacticianModule\Factory\Controller\Plugin\TacticianCommandBusPluginFactory;
@@ -16,27 +17,20 @@ class TacticianCommandBusPluginFactoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var ServiceManager|\PHPUnit_Framework_MockObject_MockObject $sm */
-        $sm = $this->getMockBuilder(ServiceManager::class)
-            ->setMethods(['get'])
-            ->getMock();
 
-        $sm->expects($this->once())
+        /** @var AbstractPluginManager|\PHPUnit_Framework_MockObject_MockObject $pluginManager */
+        $pluginManager = $this->getMockBuilder(ContainerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+
+        $pluginManager->expects($this->once())
             ->method('get')
             ->with($this->equalTo(CommandBus::class))
             ->will($this->returnValue($commandBus));
 
-        /** @var AbstractPluginManager|\PHPUnit_Framework_MockObject_MockObject $pluginManager */
-        $pluginManager = $this->getMockBuilder(AbstractPluginManager::class)
-            ->setMethods(['getServiceLocator'])
-            ->getMockForAbstractClass();
-
-        $pluginManager->expects($this->once())
-            ->method('getServiceLocator')
-            ->will($this->returnValue($sm));
-
         $factory = new TacticianCommandBusPluginFactory();
-        $this->assertInstanceOf(TacticianCommandBusPlugin::class, $factory->createService($pluginManager));
+        $this->assertInstanceOf(TacticianCommandBusPlugin::class, $factory($pluginManager, ''));
     }
 
     public function testCreateServiceWithServiceManager()
@@ -54,6 +48,6 @@ class TacticianCommandBusPluginFactoryTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($commandBus));
 
         $factory = new TacticianCommandBusPluginFactory();
-        $this->assertInstanceOf(TacticianCommandBusPlugin::class, $factory->createService($sm));
+        $this->assertInstanceOf(TacticianCommandBusPlugin::class, $factory($sm,''));
     }
 }

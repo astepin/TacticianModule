@@ -1,10 +1,10 @@
 <?php
 namespace TacticianModule\Locator;
 
+use Interop\Container\ContainerInterface;
 use League\Tactician\Exception\MissingHandlerException;
 use League\Tactician\Handler\Locator\HandlerLocator;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class ZendLocator implements HandlerLocator
 {
@@ -13,7 +13,7 @@ class ZendLocator implements HandlerLocator
 
     private $serviceLocator;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct(ContainerInterface $serviceLocator)
     {
         $this->serviceLocator = $serviceLocator;
     }

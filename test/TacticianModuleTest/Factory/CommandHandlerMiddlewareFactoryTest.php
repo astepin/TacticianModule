@@ -36,7 +36,7 @@ class CommandHandlerMiddlewareFactoryTest extends \PHPUnit_Framework_TestCase
 
 
         $factory = new CommandHandlerMiddlewareFactory();
-        $handler = $factory->createService($serviceLocator);
+        $handler = $factory($serviceLocator, '');
 
         $this->assertInstanceOf(CommandHandlerMiddleware::class, $handler);
     }
